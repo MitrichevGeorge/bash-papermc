@@ -6,6 +6,7 @@ ADRESS=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
 echo "Сервер будет доступен по локальной сети на $ADRESS"
 
 java -Xms4G -Xmx4G \
+  -Dlogin.plugin=openlogin \
   -XX:+UseZGC \
   -XX:+ZGenerational \
   -XX:+AlwaysPreTouch \

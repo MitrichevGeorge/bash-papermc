@@ -97,15 +97,16 @@ if [ -f /etc/os-release ]; then
     fi
 
     echo "[4] Установка плагинов ..."
-    if confirm "Нужна регистрация игроков(openlogin)?"; then
-        # URL=$(curl -s "https://api.modrinth.com/v2/project/openlogin/version/1.6.7" | jq -r '.files[0].url') && wget "$URL" -O plugins/OpenLogin.jar
-        # mkdir -p config
-        # (echo stop) | java -jar $FILENAME --nogui
-        # sed -i \
-        #     -e 's/^allow-advertising:.*/allow-advertising: false/' \
-        #     -e "s/^languageFile:.*/languageFile: 'messages_ru.yml'/" \
-        #     plugins/OpeNLogin/config.yml
-        wget "https://repo.nickuc.com/files/latest/nLogin.jar" -O plugins/nLogin.jar
+    if confirm "Нужна регистрация игроков(OpenLogin)?"; then
+        echo "Скачиваем OpenLogin..."
+        URL=$(curl -s "https://api.modrinth.com/v2/project/openlogin/version/1.6.7" | jq -r '.files[0].url') && wget "$URL" -O plugins/OpenLogin.jar
+        mkdir -p config
+        (echo stop) | java -jar $FILENAME --nogui
+        sed -i \
+            -e 's/^allow-advertising:.*/allow-advertising: false/' \
+            -e "s/^languageFile:.*/languageFile: 'messages_ru.yml'/" \
+            plugins/OpeNLogin/config.yml
+        # wget "https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/nLogin.jar" -O plugins/nLogin.jar
     fi
     if confirm "Нужна поддержка более новых и более старых клиентов (ViaVersion и ViaBackwards)?"; then
         echo "Скачиваем ViaVersion..."
@@ -124,10 +125,9 @@ if [ -f /etc/os-release ]; then
             echo "Ошибка: Не удалось получить ссылку для ViaBackwards"
         fi
     fi
-    # https://modrinth.com/plugin/grimac/version/wDqdP7DQ
-    # https://modrinth.com/plugin/foxaddition/version/1.2.2
-    if confirm "Нужен античит(FoxAddition)?"; then
-        URL=$(curl -s "https://api.modrinth.com/v2/project/foxaddition/version/1.2.2" | jq -r '.files[0].url') && wget "$URL" -O plugins/FoxAddition.jar
+    if confirm "Нужен античит(GrimAC)?"; then
+        echo "Скачиваем Grim Anticheat..."
+        URL=$(curl -s "https://api.modrinth.com/v2/project/grimac/version/wDqdP7DQ" | jq -r '.files[0].url') && wget "$URL" -O plugins/GrimAC.jar
     fi
 
     echo "Настройка прав доступа для пользователя $REAL_USER..."
