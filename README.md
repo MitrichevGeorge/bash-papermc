@@ -4,7 +4,13 @@
 Этот скрипт помогает установить `java` и `folia-1.20.4`, а затем установить плагины и настроить доступ без лицензии
 
 Установка(с вопросами):
-
+```
+curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash
+```
+Полная установка (без вопросов):
+```
+curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash -s -- --noconfirm
+```
 
 при скорости интернета `12 Мбит/с` полная установка занимает от `40.5 секунд` до `1 минуты 26 секунд`
 
