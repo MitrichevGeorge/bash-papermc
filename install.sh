@@ -103,7 +103,7 @@ if [ -f /etc/os-release ]; then
             echo "online-mode=false" > server.properties
         fi
     fi
-    MOTD_TEXT="Folia 1.20.4 on ${REAL_USER}\n                  <gradient:#ff5555:#55ff55:#5555ff>by @geomit1</gradient>"
+    MOTD_TEXT=$'Folia 1.20.4 on '"${REAL_USER}"$'\n<gradient:#ff5555:#55ff55:#5555ff>by @geomit1</gradient>'
     if [ -f config/paper-global.yml ]; then
         if grep -q "motd:" config/paper-global.yml; then
             sed -i "s|motd:.*|motd: \"${MOTD_TEXT}\"|g" config/paper-global.yml
@@ -112,6 +112,7 @@ if [ -f /etc/os-release ]; then
             echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
         fi
     else
+        mkdir -p config
         echo "server-fronting:" > config/paper-global.yml
         echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
     fi
