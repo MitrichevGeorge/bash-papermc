@@ -27,10 +27,7 @@ confirm() {
     local response
 
     while true; do
-        if ! read -r -p "$prompt" response < /dev/tty; then
-            return 1
-        fi
-        
+        read -r -p "$prompt" response
         response="${response,,}" 
         
         case "$response" in
