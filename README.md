@@ -5,11 +5,11 @@
 
 *Установка(с вопросами):*
 ```
-curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash
+curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/bootstrap.sh | sudo bash
 ```
 *Полная установка (без вопросов):*
 ```
-curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash -s -- --noconfirm
+curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/bootstrap.sh | sudo bash -s -- --noconfirm
 ```
 
 при скорости интернета `12 Мбит/с` полная установка занимает от `40.5 секунд` до `1 минуты 26 секунд`
