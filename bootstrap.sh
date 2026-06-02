@@ -5,7 +5,7 @@ set -e
 TMP=$(mktemp)
 
 curl -fsSL \
-  https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install-main.sh \
+  https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh \
   -o "$TMP"
 
 chmod +x "$TMP"
