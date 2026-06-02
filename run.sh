@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SAVEPATH=$HOME/.papermc-geomit
+cd $SAVEPATH
 ADRESS=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
 echo "Сервер будет доступен по локальной сети на $ADRESS"
 
