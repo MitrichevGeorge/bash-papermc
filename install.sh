@@ -64,7 +64,7 @@ if [ -f /etc/os-release ]; then
     case "$ID" in
         ubuntu|debian)
             if confirm "Обновить пакеты?"; then
-                sudo apt update -y && apt upgrade -y
+                sudo apt update -y && sudo apt upgrade -y
             fi
             sudo apt install -y openjdk-21-jre-headless jq wget curl
             ;;
@@ -102,6 +102,18 @@ if [ -f /etc/os-release ]; then
         else
             echo "online-mode=false" > server.properties
         fi
+    fi
+    MOTD_TEXT="Folia 1.20.4 on ${REAL_USER}\n                  <gradient:#ff5555:#55ff55:#5555ff>by @geomit1</gradient>"
+    if [ -f config/paper-global.yml ]; then
+        if grep -q "motd:" config/paper-global.yml; then
+            sed -i "s|motd:.*|motd: \"${MOTD_TEXT}\"|g" config/paper-global.yml
+        else
+            echo "server-fronting:" >> config/paper-global.yml
+            echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
+        fi
+    else
+        echo "server-fronting:" > config/paper-global.yml
+        echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
     fi
 
     log_step "[4] Установка плагинов ..."
