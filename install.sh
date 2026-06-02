@@ -14,20 +14,22 @@ SAVEPATH="$REAL_HOME/.papermc-geomit"
 FILENAME="folia-1.20.4.jar"
 
 confirm() {
-    # if [ "$NOCONFIRM" = true ]; then
-    #     return 0
-    # fi
+    if [ "$NOCONFIRM" = true ]; then
+        return 0
+    fi
 
-    # if [ ! -t 0 ]; then
-    #     echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
-    #     return 1
-    # fi
+    if [ ! -t 0 ]; then
+        echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
+        return 1
+    fi
 
     local prompt="${1:-Вы уверены?} [Y/n]: "
     local response
 
     while true; do
-        read -r -p "$prompt" response
+        if ! read -r -p "$prompt" response < /dev/tty; then
+            return 1
+        fi
         
         response="${response,,}" 
         
