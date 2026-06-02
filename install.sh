@@ -18,10 +18,10 @@ confirm() {
         return 0
     fi
 
-    if [ ! -t 0 ]; then
-        echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
-        return 1
-    fi
+    # if [ ! -t 0 ]; then
+    #     echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
+    #     return 1
+    # fi
 
     local prompt="${1:-Вы уверены?} [Y/n]: "
     local response
