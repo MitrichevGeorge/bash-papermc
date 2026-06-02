@@ -14,9 +14,9 @@ SAVEPATH="$REAL_HOME/.papermc-geomit"
 FILENAME="folia-1.20.4.jar"
 
 confirm() {
-    if [ "$NOCONFIRM" = true ]; then
-        return 0
-    fi
+    # if [ "$NOCONFIRM" = true ]; then
+    #     return 0
+    # fi
 
     # if [ ! -t 0 ]; then
     #     echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
@@ -45,35 +45,56 @@ confirm() {
     done
 }
 
+RESET='\033[0m'
+BG_BLUE='\033[1;34m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+
+log_step() {
+    echo -e "\n${BG_BLUE}$1${RESET}"
+}
+
+log_success() {
+    echo -e "${GREEN}✔ $1${RESET}"
+}
+
+log_warning() {
+    echo -e "${YELLOW}⚠ $1${RESET}"
+}
+
+log_error() {
+    echo -e "${RED}✘ Ошибка: $1${RESET}" >&2
+}
+
 if [ -f /etc/os-release ]; then
 
     . /etc/os-release
-    echo "Обнаруженная ос: $NAME"
+    log_step "Обнаруженная ос: $NAME"
     
-    echo "[1] Установка зависимостей ..."
+    log_step "[1] Установка зависимостей ..."
     case "$ID" in
         ubuntu|debian)
             if confirm "Обновить пакеты?"; then
-                sudo apt update -y
-                sudo apt upgrade -y
+                apt update -y && apt upgrade -y
             fi
-            sudo apt install openjdk-21-jre-headless jq
+            apt install -y openjdk-21-jre-headless jq wget curl
             ;;
         centos|rhel|fedora)
             if confirm "Обновить пакеты?"; then
-                sudo dnf update -y
-                sudo dnf upgrade -y
+                dnf update -y && dnf upgrade -y
             fi
-            sudo dnf install openjdk-21-jre-headless jq
+            dnf install -y openjdk-21-jre-headless jq wget curl
             ;;
         arch)
             if confirm "Обновить пакеты?"; then
-                sudo pacman -Syu --noconfirm
+                pacman -Syu --noconfirm
             fi
-            sudo pacman -S --noconfirm jre21-openjdk-headless jq
+            pacman -S --noconfirm jre21-openjdk-headless jq wget curl
             ;;
         *)
-            echo "Неизвестная os"
+            echo "Неподдерживаемая ОС"
             exit 1
             ;;
     esac
@@ -81,10 +102,10 @@ if [ -f /etc/os-release ]; then
     mkdir -p $SAVEPATH
     cd $SAVEPATH
 
-    echo "[2] Скачиваем folia 1.20.4 ..."
+    log_step "[2] Скачиваем folia 1.20.4 ..."
     wget "https://api.papermc.io/v2/projects/folia/versions/1.20.4/builds/26/downloads/folia-1.20.4-26.jar" -O $FILENAME
 
-    echo "[3] Первый запук ..."
+    log_step "[3] Первый запук ..."
     java -jar $FILENAME nogui 
     echo "eula=true" > eula.txt
     if confirm "Включить поддержку игроков без лицензии (offline-mode)?"; then
@@ -96,7 +117,7 @@ if [ -f /etc/os-release ]; then
         fi
     fi
 
-    echo "[4] Установка плагинов ..."
+    log_step "[4] Установка плагинов ..."
     mkdir -p plugins
     if confirm "Нужна регистрация игроков(OpenLogin)?"; then
         echo "Скачиваем OpenLogin..."
@@ -125,7 +146,7 @@ if [ -f /etc/os-release ]; then
         wget -q "$URL" -O plugins/GrimAC.jar
     fi
 
-    echo "[5] Настройка системы ..."
+    log_step "[5] Настройка системы ..."
     wget https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/run.sh -O run.sh
     chmod +x run.sh
     BASHRC_FILE="$REAL_HOME/.bashrc"
@@ -137,8 +158,8 @@ if [ -f /etc/os-release ]; then
     sudo chown -R "$REAL_USER":"$REAL_USER" "$SAVEPATH"
 
 
-    echo "[6] Готово!"
-    echo "Чтобы использовать команду 'run-mc', перезапустите терминал или выполните: source ~/.bashrc"
+    log_step "[6] Готово!"
+    log_step "Чтобы использовать команду 'run-mc', перезапустите терминал или выполните: source ~/.bashrc"
 
 else
     echo "Не удалось определить дистрибутив (файл /etc/os-release отсутствует)"

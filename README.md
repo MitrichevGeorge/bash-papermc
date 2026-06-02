@@ -14,7 +14,11 @@ curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/in
 
 при скорости интернета `12 Мбит/с` полная установка занимает от `40.5 секунд` до `1 минуты 26 секунд`
 
-
+## Run
+Чтобы запустить просто пропишите одну команду:
+```
+run-mc
+```
 
 
 ---
