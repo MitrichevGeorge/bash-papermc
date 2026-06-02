@@ -7,6 +7,7 @@ echo "Сервер будет доступен по локальной сети 
 
 java -Xms4G -Xmx4G \
   -Dlogin.plugin=openlogin \
+  -Dnickuc.advertising=false \
   -XX:+UseZGC \
   -XX:+ZGenerational \
   -XX:+AlwaysPreTouch \

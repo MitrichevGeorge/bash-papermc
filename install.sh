@@ -55,14 +55,14 @@ if [ -f /etc/os-release ]; then
         ubuntu|debian)
             if confirm "Обновить пакеты?"; then
                 sudo apt update -y
-                # sudo apt upgarde -y
+                sudo apt upgrade -y
             fi
             sudo apt install openjdk-21-jre-headless jq
             ;;
         centos|rhel|fedora)
             if confirm "Обновить пакеты?"; then
                 sudo dnf update -y
-                sudo dnf upgarde -y
+                sudo dnf upgrade -y
             fi
             sudo dnf install openjdk-21-jre-headless jq
             ;;
@@ -97,44 +97,48 @@ if [ -f /etc/os-release ]; then
     fi
 
     echo "[4] Установка плагинов ..."
+    mkdir -p plugins
     if confirm "Нужна регистрация игроков(OpenLogin)?"; then
         echo "Скачиваем OpenLogin..."
-        URL=$(curl -s "https://api.modrinth.com/v2/project/openlogin/version/1.6.7" | jq -r '.files[0].url') && wget "$URL" -O plugins/OpenLogin.jar
+        URL=$(curl -s "https://api.modrinth.com/v2/project/openlogin/version/1.6.7" | jq -r '.files[0].url') && wget -q "$URL" -O plugins/OpenLogin.jar
         mkdir -p config
+        mkdir -p plugins/OpeNLogin && echo "openlogin" > plugins/OpeNLogin/.setup
         (echo stop) | java -jar $FILENAME --nogui
         sed -i \
             -e 's/^allow-advertising:.*/allow-advertising: false/' \
             -e "s/^languageFile:.*/languageFile: 'messages_ru.yml'/" \
             plugins/OpeNLogin/config.yml
-        # wget "https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/nLogin.jar" -O plugins/nLogin.jar
     fi
-    if confirm "Нужна поддержка более новых и более старых клиентов (ViaVersion и ViaBackwards)?"; then
+    if confirm "Нужна поддержка старых/новых клиентов (ViaVersion & ViaBackwards)?"; then
         echo "Скачиваем ViaVersion..."
         URL=$(curl -s "https://api.modrinth.com/v2/project/viaversion/version" | jq -r '.[0].files[0].url')
-        if [ -n "$URL" ] && [ "$URL" != "null" ]; then
-            wget "$URL" -O plugins/ViaVersion.jar
-        else
-            echo "Ошибка: Не удалось получить ссылку для ViaVersion"
-        fi
+        [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/ViaVersion.jar
 
         echo "Скачиваем ViaBackwards..."
         URL=$(curl -s "https://api.modrinth.com/v2/project/viabackwards/version" | jq -r '.[0].files[0].url')
-        if [ -n "$URL" ] && [ "$URL" != "null" ]; then
-            wget "$URL" -O plugins/ViaBackwards.jar
-        else
-            echo "Ошибка: Не удалось получить ссылку для ViaBackwards"
-        fi
-    fi
-    if confirm "Нужен античит(GrimAC)?"; then
-        echo "Скачиваем Grim Anticheat..."
-        URL=$(curl -s "https://api.modrinth.com/v2/project/grimac/version/wDqdP7DQ" | jq -r '.files[0].url') && wget "$URL" -O plugins/GrimAC.jar
+        [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/ViaBackwards.jar
     fi
 
-    echo "Настройка прав доступа для пользователя $REAL_USER..."
+    if confirm "Нужен античит (GrimAC)?"; then
+        echo "Скачиваем Grim Anticheat..."
+        URL=$(curl -s "https://api.modrinth.com/v2/project/grimac/version/wDqdP7DQ" | jq -r '.files[0].url')
+        wget -q "$URL" -O plugins/GrimAC.jar
+    fi
+
+    echo "[5] Настройка системы ..."
+    wget https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/run.sh -O run.sh
+    chmod +x run.sh
+    BASHRC_FILE="$REAL_HOME/.bashrc"
+    ALIAS_LINE="alias run-mc='$SAVEPATH/run.sh'"
+    if ! grep -Fq "alias run-mc=" "$BASHRC_FILE"; then
+        echo "" >> "$BASHRC_FILE"
+        echo "$ALIAS_LINE" >> "$BASHRC_FILE"
+    fi
     sudo chown -R "$REAL_USER":"$REAL_USER" "$SAVEPATH"
 
-    echo "[5] Готово!"
-    echo "Запуск сервера - команда run-mc"
+
+    echo "[6] Готово!"
+    echo "Чтобы использовать команду 'run-mc', перезапустите терминал или выполните: source ~/.bashrc"
 
 else
     echo "Не удалось определить дистрибутив (файл /etc/os-release отсутствует)"
