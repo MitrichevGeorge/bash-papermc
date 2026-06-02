@@ -56,18 +56,6 @@ log_step() {
     echo -e "\n${BG_BLUE}$1${RESET}"
 }
 
-log_success() {
-    echo -e "${GREEN}✔ $1${RESET}"
-}
-
-log_warning() {
-    echo -e "${YELLOW}⚠ $1${RESET}"
-}
-
-log_error() {
-    echo -e "${RED}✘ Ошибка: $1${RESET}" >&2
-}
-
 if [ -f /etc/os-release ]; then
 
     . /etc/os-release

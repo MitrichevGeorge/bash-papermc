@@ -3,11 +3,11 @@
 ## Installation
 Этот скрипт помогает установить `java` и `folia-1.20.4`, а затем установить плагины и настроить доступ без лицензии
 
-Установка(с вопросами):
+*Установка(с вопросами):*
 ```
 curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash
 ```
-Полная установка (без вопросов):
+*Полная установка (без вопросов):*
 ```
 curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/install.sh | sudo bash -s -- --noconfirm
 ```
