@@ -64,21 +64,21 @@ if [ -f /etc/os-release ]; then
     case "$ID" in
         ubuntu|debian)
             if confirm "Обновить пакеты?"; then
-                apt update -y && apt upgrade -y
+                sudo apt update -y && apt upgrade -y
             fi
-            apt install -y openjdk-21-jre-headless jq wget curl
+            sudo apt install -y openjdk-21-jre-headless jq wget curl
             ;;
         centos|rhel|fedora)
             if confirm "Обновить пакеты?"; then
-                dnf update -y && dnf upgrade -y
+                sudo dnf update -y && dnf upgrade -y
             fi
-            dnf install -y openjdk-21-jre-headless jq wget curl
+            sudo dnf install -y openjdk-21-jre-headless jq wget curl
             ;;
         arch)
             if confirm "Обновить пакеты?"; then
-                pacman -Syu --noconfirm
+                sudo pacman -Syu --noconfirm
             fi
-            pacman -S --noconfirm jre21-openjdk-headless jq wget curl
+            sudo pacman -S --noconfirm jre21-openjdk-headless jq wget curl
             ;;
         *)
             echo "Неподдерживаемая ОС"
