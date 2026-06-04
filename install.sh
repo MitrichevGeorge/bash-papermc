@@ -103,18 +103,15 @@ if [ -f /etc/os-release ]; then
             echo "online-mode=false" > server.properties
         fi
     fi
-    MOTD_TEXT=$'Folia 1.20.4 on '"${REAL_USER}"$'\n<gradient:#ff5555:#55ff55:#5555ff>by @geomit1</gradient>'
-    if [ -f config/paper-global.yml ]; then
-        if grep -q "motd:" config/paper-global.yml; then
-            sed -i "s|motd:.*|motd: \"${MOTD_TEXT}\"|g" config/paper-global.yml
+    MOTD_TEXT="§6Folia §e1.20.4 §7on '§b${REAL_USER}§7'\n§cby §a@§2g§ae§2o§am§2i§at§21"
+    if [ -f server.properties ]; then
+        if grep -q "^motd=" server.properties; then
+            sed -i "s|^motd=.*|motd=${MOTD_TEXT}|" server.properties
         else
-            echo "server-fronting:" >> config/paper-global.yml
-            echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
+            echo "motd=${MOTD_TEXT}" >> server.properties
         fi
     else
-        mkdir -p config
-        echo "server-fronting:" > config/paper-global.yml
-        echo "  motd: \"${MOTD_TEXT}\"" >> config/paper-global.yml
+        echo "motd=${MOTD_TEXT}" > server.properties
     fi
 
     log_step "[4] Установка плагинов ..."
