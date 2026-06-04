@@ -103,7 +103,7 @@ if [ -f /etc/os-release ]; then
             echo "online-mode=false" > server.properties
         fi
     fi
-    MOTD_TEXT="§6Folia §e1.20.4 §7on '§b${REAL_USER}§7'\n§cby §a@§2g§ae§2o§am§2i§at§21"
+    MOTD_TEXT="§6Folia §e1.20.4 §7on '§b${REAL_USER}§7'  §cby §a@§2g§ae§2o§am§2i§at§21"
     if [ -f server.properties ]; then
         if grep -q "^motd=" server.properties; then
             sed -i "s|^motd=.*|motd=${MOTD_TEXT}|" server.properties
