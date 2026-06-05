@@ -4,11 +4,11 @@
 Этот скрипт помогает автоматически установить `java` и `folia-1.20.4`, а также установить базовые плагины и настроить доступ для игроков без лицензии.
 
 **Установка (с интерактивными вопросами):**
-```
+```bash
 bash <(curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/bootstrap.sh)
 ```
 **Полная установка (без вопросов):**
-```
+```bash
 curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/bootstrap.sh | sudo bash -s -- --noconfirm
 ```
 
@@ -16,9 +16,16 @@ curl -sSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/bo
 
 ## Running the Server
 Чтобы запустить сервер просто пропишите одну команду в терминале:
-```
+```bash
 run-mc
 ```
+
+## Uninstallation
+Чтобы полностью удалить сервер, миры, плагины, настройки и команду `run-mc`, выполните:
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/uninstall.sh)
+```
+Скрипт запросит подтверждение удалением через ввод `YES`.
 
 ## Overview
 > **Supported Package Managers:** `apt` (Debian/Ubuntu), `dnf` (RHEL/CentOS/Fedora), and `pacman` (Arch Linux).

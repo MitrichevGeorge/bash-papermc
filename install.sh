@@ -157,6 +157,8 @@ if [ -f /etc/os-release ]; then
 
     log_step "[6] Готово!"
     log_step "Чтобы использовать команду 'run-mc', перезапустите терминал или выполните: source ~/.bashrc"
+    log_step "Чтобы удалить пропишите: bash <(curl -fsSL https://raw.githubusercontent.com/MitrichevGeorge/bash-papermc/main/uninstall.sh)"
+    log_step "Для запуска сервера пропишите 'run-mc'"
 
 else
     echo "Не удалось определить дистрибутив (файл /etc/os-release отсутствует)"
