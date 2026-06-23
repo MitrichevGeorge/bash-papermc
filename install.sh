@@ -193,8 +193,7 @@ if [ -f /etc/os-release ]; then
         [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/WorldEditSelectionVisualizer.jar
         if confirm "Нужен приват (WorldGuard)?"; then
             echo "Скачиваем WorldGuard..."
-            URL=$(curl -s "https://api.modrinth.com/v2/project/worldguard/version" | jq -r '.files[0].url')
-            wget -q "$URL" -O plugins/WorldGuard.jar
+            wget -q "https://cdn.modrinth.com/data/DKY9btbd/versions/pI4UHLJL/worldguard-bukkit-7.0.17.jar" -O plugins/WorldGuard.jar
         fi
     fi
 
