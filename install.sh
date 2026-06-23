@@ -13,6 +13,19 @@ REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 SAVEPATH="$REAL_HOME/.papermc-geomit"
 FILENAME="folia-1.20.4.jar"
 
+check_integrity() {
+    EXPECTED_SHA256="7c50352ffb65074ffb6736279f0418c2132e49c7ea96fbcfbf9fdfa19ba04a91"
+    if [ -f "$FILENAME" ]; then
+        local current_sha256
+        current_sha256=$(sha256sum "$FILENAME" | awk '{print $1}')
+        
+        if [ "$current_sha256" = "$EXPECTED_SHA256" ]; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
 confirm() {
     if [ "$NOCONFIRM" = true ]; then
         return 0
@@ -99,8 +112,29 @@ if [ -f /etc/os-release ]; then
             ;;
     esac
 
+    if [ -d "$SAVEPATH" ] && [ "$(ls -A "$SAVEPATH" 2>/dev/null)" ]; then
+        if check_integrity; then
+            if confirm "Предупреждение: Сервер уже установлен. Вы уверены что хотите его удалить и установить заново?" "n"; then
+                echo "Удаление сервера..."
+                rm -rf "$SAVEPATH"
+            else
+                echo "Остановка скрипта по требованию пользователя."
+                exit 0
+            fi
+        else
+            echo "Предупреждение: Директория '$SAVEPATH' уже существует и содержит файлы, но возможно в ней повреждённый folia."
+            if confirm "Удалить существующую папку и начать чистую установку?" "n"; then
+                echo "Удаляем старую директорию..."
+                rm -rf "$SAVEPATH"
+            else
+                echo "Остановка скрипта по требованию пользователя."
+                exit 0
+            fi
+        fi
+    fi
+
     mkdir -p $SAVEPATH
-    cd $SAVEPATH
+    cd $SAVEPATH || exit 1
 
     log_step "[2] Скачиваем folia 1.20.4 ..."
     wget "https://api.papermc.io/v2/projects/folia/versions/1.20.4/builds/26/downloads/folia-1.20.4-26.jar" -O $FILENAME
@@ -148,6 +182,20 @@ if [ -f /etc/os-release ]; then
         echo "Скачиваем ViaBackwards..."
         URL=$(curl -s "https://api.modrinth.com/v2/project/viabackwards/version" | jq -r '.[0].files[0].url')
         [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/ViaBackwards.jar
+    fi
+    if confirm "Нужен WorldEdit (WorldEdit & WorldEditSelectionVisualizer)?"; then
+        echo "Скачиваем WorldEdit..."
+        URL=$(curl -s "https://api.modrinth.com/v2/project/worldedit/version" | jq -r '.[0].files[0].url')
+        [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/WorldEdit.jar
+
+        echo "Скачиваем WESV(WorldEditSelectionVisualizer)..."
+        URL=$(curl -s "https://api.modrinth.com/v2/project/wesv/version" | jq -r '.[0].files[0].url')
+        [ -n "$URL" ] && [ "$URL" != "null" ] && wget -q "$URL" -O plugins/WorldEditSelectionVisualizer.jar
+        if confirm "Нужен приват (WorldGuard)?"; then
+            echo "Скачиваем WorldGuard..."
+            URL=$(curl -s "https://api.modrinth.com/v2/project/worldguard/version" | jq -r '.files[0].url')
+            wget -q "$URL" -O plugins/WorldGuard.jar
+        fi
     fi
 
     if confirm "Нужен античит (GrimAC)?"; then
