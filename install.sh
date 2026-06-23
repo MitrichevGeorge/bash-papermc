@@ -18,20 +18,33 @@ confirm() {
         return 0
     fi
 
-    # if [ ! -t 0 ]; then
-    #     echo "Ошибка: Скрипт ожидает ввода, но терминал недоступен. Используйте --noconfirm." >&2
-    #     return 1
-    # fi
+    local prompt_text="${1:-Вы уверены?}"
+    local default_input="${2:-y}"
+    default_input="${default_input,,}"
+    local prompt
+    local default_action
 
-    local prompt="${1:-Вы уверены?} [Y/n]: "
+    case "$default_input" in
+        "0"|"n"|"no")
+            prompt="$prompt_text [y/N]: "
+            default_action="no"
+            ;;
+        *)
+            prompt="$prompt_text [Y/n]: "
+            default_action="yes"
+            ;;
+    esac
+
     local response
-
     while true; do
         read -r -p "$prompt" response
         response="${response,,}" 
-        
+        if [ -z "$response" ]; then
+            response="$default_action"
+        fi
+
         case "$response" in
-            ""|"y"|"yes")
+            "y"|"yes")
                 return 0
                 ;;
             "n"|"no")
