@@ -136,17 +136,21 @@ if [ -f /etc/os-release ]; then
     mkdir -p $SAVEPATH
     cd $SAVEPATH || exit 1
 
-    log_step "[2] Получаем информацию о последней сборке folia 1.20.4 ..."
-    LATEST_BUILD=$(curl -s https://api.papermc.io/v2/projects/folia/versions/1.20.4/ | grep -oE '"builds":\[[^]]*\]' | grep -oE '[0-8]+' | tail -n 1)
+    log_step "[2] Получаем информацию о последней сборке folia 1.20.4 через новый Fill API..."
+    API_RESPONSE=$(curl -s -H "User-Agent: MyMinecraftServer/1.0 (contact@example.com)" "https://fill.papermc.io/v3/projects/folia/versions/1.20.4")
 
-    if [ -z "$LATEST_BUILD" ]; then
-        log_step "[Ошибка] Не удалось получить список сборок для 1.20.4. Проверьте интернет-соединение."
+    LATEST_BUILD=$(echo "$API_RESPONSE" | grep -oE '"builds":\[[^]]*\]' | grep -oE '[0-9]+' | tail -n 1)
+    if [ -z "$LATEST_BUILD" ] || [ "$LATEST_BUILD" = "null" ]; then
+        log_step "[Ошибка] Не удалось получить сборку. Ответ API: $API_RESPONSE"
         exit 1
     fi
 
-    log_step "[2] Скачиваем folia 1.20.4 (Сборка #$LATEST_BUILD) ..."
-    wget "https://api.papermc.io/v2/projects/folia/versions/1.20.4/builds/${LATEST_BUILD}/downloads/folia-1.20.4-${LATEST_BUILD}.jar" -O $FILENAME
+    log_step "[2] Скачиваем folia 1.20.4 (Сборка #$LATEST_BUILD) через fill-data..."
+    wget --user-agent="MyMinecraftServer/1.0 (contact@example.com)" \
+         "https://fill-data.papermc.io/v3/projects/folia/versions/1.20.4/builds/${LATEST_BUILD}/downloads/server-default" \
+         -O $FILENAME
 
+         
     
     log_step "[3] Первый запук ..."
     java -jar $FILENAME nogui 
