@@ -136,9 +136,18 @@ if [ -f /etc/os-release ]; then
     mkdir -p $SAVEPATH
     cd $SAVEPATH || exit 1
 
-    log_step "[2] Скачиваем folia 1.20.4 ..."
-    wget "https://api.papermc.io/v2/projects/folia/versions/1.20.4/builds/26/downloads/folia-1.20.4-26.jar" -O $FILENAME
+    log_step "[2] Получаем информацию о последней сборке folia 1.20.4 ..."
+    LATEST_BUILD=$(curl -s https://api.papermc.io/v2/projects/folia/versions/1.20.4/ | grep -oE '"builds":\[[^]]*\]' | grep -oE '[0-8]+' | tail -n 1)
 
+    if [ -z "$LATEST_BUILD" ]; then
+        log_step "[Ошибка] Не удалось получить список сборок для 1.20.4. Проверьте интернет-соединение."
+        exit 1
+    fi
+
+    log_step "[2] Скачиваем folia 1.20.4 (Сборка #$LATEST_BUILD) ..."
+    wget "https://api.papermc.io/v2/projects/folia/versions/1.20.4/builds/${LATEST_BUILD}/downloads/folia-1.20.4-${LATEST_BUILD}.jar" -O $FILENAME
+
+    
     log_step "[3] Первый запук ..."
     java -jar $FILENAME nogui 
     echo "eula=true" > eula.txt
